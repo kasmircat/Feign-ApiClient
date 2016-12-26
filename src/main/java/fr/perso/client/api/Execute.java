@@ -1,11 +1,9 @@
 package fr.perso.client.api;
 
 import feign.Feign;
-import feign.gson.GsonDecoder;
+import feign.jackson.JacksonDecoder;
+import fr.perso.client.api.domain.Meteo;
 
-/**
- * Created by s.vidal on 22/12/2016.
- */
 public class Execute {
 
     public static void main(String[] args) {
@@ -17,10 +15,15 @@ public class Execute {
         System.out.println(apikey);
 
         ClientApi clientApi = Feign.builder()
-                .decoder(new GsonDecoder())
+                .decoder(new JacksonDecoder())
                 .target(ClientApi.class, "http://api.openweathermap.org/data/2.5");
 
-        System.out.println(clientApi.getMeteo(city, apikey));
+        Meteo meteo = clientApi.getMeteo(city, apikey);
+        System.out.println("City : " + meteo.getName());
+        System.out.println("Humidity : " + meteo.getMain().getHumidity());
+        System.out.println("Actual Temperature : " + meteo.getMain().getTemp());
+        System.out.println("Minimal Temperature : " + meteo.getMain().getTemp_min());
+        System.out.println("Maximal Temperature : " + meteo.getMain().getTemp_max());
     }
 
 }
